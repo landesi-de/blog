@@ -12,37 +12,53 @@ import Footer from '../components/Footer.astro';
 <!doctype html>
 <html lang="ja">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description} />
     <title>{title ? `${title} | NOTE & LIFE` : 'NOTE & LIFE'}</title>
+    <meta name="description" content={description} />
   </head>
   <body>
-    <div class="site-wrapper">
-      <Header />
-      <main class="site-main">
-        <slot />
-      </main>
-      <Footer />
-    </div>
+    <Header />
+    <main class="main-content">
+      <slot />
+    </main>
+    <Footer />
   </body>
 </html>
 
 <style is:global>
-  /* ページ全体の基本リセットとnote風背景 */
-  * {
+  /* サイト全体のリセットとフォント一括指定 */
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
   }
 
-  html {
-    background-color: #ffffff; /* 清潔感のある白 */
+  /* ↓ ここのフォント指定がサイト全体の全ページ・全要素に一括適用されます */
+  html,
+  body,
+  button,
+  input,
+  textarea,
+  select {
+    font-family: "Zen Maru Gothic", sans-serif;
+    font-weight: 400;
     color: #27272a;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background-color: #ffffff;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h2,
+  h3 {
+    font-weight: 700;
   }
 
   body {
@@ -51,14 +67,16 @@ import Footer from '../components/Footer.astro';
     flex-direction: column;
   }
 
-  .site-wrapper {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  .main-content {
+    flex: 1;
   }
 
-  .site-main {
-    flex: 1;
-    width: 100%;
+  a {
+    color: inherit;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
   }
 </style>

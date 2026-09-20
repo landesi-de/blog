@@ -1,0 +1,36 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { formatDate, getBlog, getBlogs } from '../../lib/microcms';
+
+export async function getStaticPaths() {
+  const { contents } = await getBlogs();
+  return contents.map((post) => ({
+    params: { id: post.id },
+  }));
+}
+
+const { id } = Astro.params;
+const post = await getBlog(id!);
+const description = post.content.replace(/<[^>]*>/g, '').slice(0, 120);
+---
+
+<Layout title={`${post.title} | LAN`} description={description}>
+  <article>
+    <header class="article-hero">
+      <time datetime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+      <h1>{post.title}</h1>
+      {post.eyecatch && (
+        <div class="cover">
+          <img
+            src={`${post.eyecatch.url}?w=1400&fit=max`}
+            alt={post.title}
+            width={post.eyecatch.width}
+            height={post.eyecatch.height}
+          />
+        </div>
+      )}
+    </header>
+    <div class="article-body" set:html={post.content} />
+    <a class="back-link" href="/">← 記事一覧へ戻る</a>
+  </article>
+</Layout>

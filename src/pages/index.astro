@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { excerptFromHtml, formatDate, getBlogs } from '../lib/microcms';
+
+const { contents } = await getBlogs();
+---
+
+<Layout>
+  <section class="hero">
+    <p class="kicker">FOR YOUR THIRTIES</p>
+    <h1>余白のある暮らしを、丁寧に。</h1>
+    <p class="lead">
+      仕事と暮らしのあいだにある、小さな選択や心地よさを綴るライフスタイルノートです。
+    </p>
+  </section>
+
+  {contents.length === 0 ? (
+    <div class="empty-state">まだ公開中の記事がありません。</div>
+  ) : (
+    <section class="article-grid" aria-label="記事一覧">
+      {contents.map((post) => (
+        <a class="article-card" href={`/blog/${post.id}`}>
+          <div class="thumb">
+            {post.eyecatch && (
+              <img
+                src={`${post.eyecatch.url}?w=800&h=600&fit=crop`}
+                alt={post.title}
+                width={post.eyecatch.width}
+                height={post.eyecatch.height}
+              />
+            )}
+          </div>
+          <div class="body">
+            <time datetime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+            <h2>{post.title}</h2>
+            <p>{excerptFromHtml(post.content)}</p>
+          </div>
+        </a>
+      ))}
+    </section>
+  )}
+</Layout>

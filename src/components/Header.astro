@@ -1,0 +1,14 @@
+---
+const path = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <a class="brand" href="/">
+    <span class="brand-mark">LAN</span>
+    <span class="brand-sub">QUIET LIVING JOURNAL</span>
+  </a>
+  <nav class="nav" aria-label="メインメニュー">
+    <a href="/" aria-current={path === '/' ? 'page' : undefined}>Articles</a>
+    <a href="/about" aria-current={path.startsWith('/about') ? 'page' : undefined}>About</a>
+  </nav>
+</header>

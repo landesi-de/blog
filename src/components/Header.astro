@@ -1,14 +1,145 @@
 ---
 const path = Astro.url.pathname;
+const BLOG_TITLE = "NOTE & LIFE";
+
+// 7つのカテゴリ一覧
+const CATEGORIES = [
+  '家電・ガジェット',
+  '暮らし・習慣',
+  '子ども・家族',
+  '趣味・お出かけ',
+  '仕事',
+  '日常',
+  'その他',
+];
 ---
 
 <header class="site-header">
-  <a class="brand" href="/">
-    <span class="brand-mark">LAN</span>
-    <span class="brand-sub">QUIET LIVING JOURNAL</span>
-  </a>
-  <nav class="nav" aria-label="メインメニュー">
-    <a href="/" aria-current={path === '/' ? 'page' : undefined}>Articles</a>
-    <a href="/about" aria-current={path.startsWith('/about') ? 'page' : undefined}>About</a>
-  </nav>
+  <div class="header-inner">
+    <a class="brand" href="/">
+      <span class="brand-title">{BLOG_TITLE}</span>
+    </a>
+    <nav class="nav">
+      <a href="/" class={path === '/' ? 'active' : ''}>Articles</a>
+      <a href="/about" class={path.startsWith('/about') ? 'active' : ''}>About</a>
+
+      <!-- マウスオーバーで出るドロップダウン -->
+      <div class="dropdown">
+        <span class="dropdown-label">Category ▾</span>
+        <div class="dropdown-menu">
+          {CATEGORIES.map((cat) => (
+            <a href={`/category/${encodeURIComponent(cat)}`} class="dropdown-item">
+              {cat}
+            </a>
+          ))}
+        </div>
+      </div>
+    </nav>
+  </div>
 </header>
+
+<style>
+  .site-header {
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .header-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand {
+    text-decoration: none;
+  }
+
+  .brand-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #0f172a;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .nav a {
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 500;
+    transition: color 0.15s ease;
+  }
+
+  .nav a:hover,
+  .nav a.active {
+    color: #1e3a8a;
+    font-weight: 600;
+  }
+
+  /* ドロップダウンメニューのスタイル */
+  .dropdown {
+    position: relative;
+    padding: 0.5rem 0; /* マウスが外れにくくするための余白 */
+    cursor: pointer;
+  }
+
+  .dropdown-label {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+    transition: color 0.15s ease;
+  }
+
+  .dropdown:hover .dropdown-label {
+    color: #1e3a8a;
+    font-weight: 600;
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #ffffff;
+    min-width: 150px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+    padding: 0.4rem 0;
+    z-index: 100;
+  }
+
+  /* マウスオーバー時に表示 */
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-item {
+    display: block;
+    padding: 0.55rem 1rem;
+    font-size: 0.85rem !important;
+    color: #334155 !important;
+    font-weight: 400 !important;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .dropdown-item:hover {
+    background-color: #f1f5f9;
+    color: #1e3a8a !important;
+    font-weight: 500 !important;
+  }
+</style>

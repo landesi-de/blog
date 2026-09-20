@@ -16,6 +16,7 @@ export type Blog = {
   title: string;
   content: string;
   eyecatch?: MicroCMSImage;
+  category?: string | string[];
 } & MicroCMSListContent;
 
 export async function getBlogs() {

@@ -1,42 +1,175 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { excerptFromHtml, formatDate, getBlogs } from '../lib/microcms';
+import { formatDate, getBlogs } from '../lib/microcms';
 
-const { contents } = await getBlogs();
+const response = await getBlogs();
+const posts = response.contents;
 ---
 
-<Layout>
-  <section class="hero">
-    <p class="kicker">FOR YOUR THIRTIES</p>
-    <h1>余白のある暮らしを、丁寧に。</h1>
-    <p class="lead">
-      仕事と暮らしのあいだにある、小さな選択や心地よさを綴るライフスタイルノートです。
-    </p>
-  </section>
+<Layout title="ホーム">
+  <div class="note-container">
+    <div class="post-list">
+      {posts.map((post) => {
+        const excerpt = post.content.replace(/<[^>]*>/g, '').slice(0, 110);
+        const categoryName = Array.isArray(post.category) ? post.category[0] : post.category;
 
-  {contents.length === 0 ? (
-    <div class="empty-state">まだ公開中の記事がありません。</div>
-  ) : (
-    <section class="article-grid" aria-label="記事一覧">
-      {contents.map((post) => (
-        <a class="article-card" href={`/blog/${post.id}`}>
-          <div class="thumb">
-            {post.eyecatch && (
-              <img
-                src={`${post.eyecatch.url}?w=800&h=600&fit=crop`}
-                alt={post.title}
-                width={post.eyecatch.width}
-                height={post.eyecatch.height}
-              />
-            )}
-          </div>
-          <div class="body">
-            <time datetime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-            <h2>{post.title}</h2>
-            <p>{excerptFromHtml(post.content)}</p>
-          </div>
-        </a>
-      ))}
-    </section>
-  )}
+        return (
+          <article class="post-item">
+            <!-- 日付とカテゴリラベル -->
+            <div class="post-meta">
+              <time datetime={post.publishedAt} class="post-date">
+                {formatDate(post.publishedAt)}
+              </time>
+              {categoryName && (
+                <a href={`/category/${encodeURIComponent(categoryName)}`} class="post-category">
+                  {categoryName}
+                </a>
+              )}
+            </div>
+
+            <!-- 記事本文・画像リンク -->
+            <a href={`/blog/${post.id}`} class="post-link">
+              <div class="post-text">
+                <h2 class="post-title">{post.title}</h2>
+                <p class="post-excerpt">{excerpt}...</p>
+              </div>
+              {post.eyecatch && (
+                <div class="post-thumbnail">
+                  <img
+                    src={`${post.eyecatch.url}?w=400&h=260&fit=crop`}
+                    alt={post.title}
+                    width="180"
+                    height="117"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+            </a>
+          </article>
+        );
+      })}
+    </div>
+  </div>
 </Layout>
+
+<style>
+  .note-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 5rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-item {
+    border-bottom: 1px solid #f1f5f9;
+    padding: 2rem 0;
+  }
+
+  .post-item:first-child {
+    padding-top: 1rem;
+  }
+
+  /* 日付とカテゴリの並び */
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .post-date {
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+
+  .post-category {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #1e3a8a;
+    background-color: #eff6ff;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+
+  .post-category:hover {
+    background-color: #dbeafe;
+  }
+
+  .post-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    text-decoration: none;
+  }
+
+  .post-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .post-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #0f172a;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+    transition: color 0.15s ease;
+  }
+
+  .post-link:hover .post-title {
+    color: #1e3a8a;
+  }
+
+  .post-excerpt {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #64748b;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .post-thumbnail {
+    flex-shrink: 0;
+  }
+
+  .post-thumbnail img {
+    width: 160px;
+    height: 104px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+    background-color: #f1f5f9;
+  }
+
+  @media (max-width: 640px) {
+    .post-link {
+      flex-direction: column-reverse;
+      gap: 1rem;
+    }
+
+    .post-thumbnail {
+      width: 100%;
+    }
+
+    .post-thumbnail img {
+      width: 100%;
+      height: 180px;
+    }
+
+    .post-title {
+      font-size: 1.15rem;
+    }
+  }
+</style>

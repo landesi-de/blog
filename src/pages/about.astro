@@ -2,15 +2,151 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="About | LAN" description="LANについて。30代の暮らしを静かに記録するライフスタイルブログです。">
-  <section class="about">
-    <h1>About</h1>
-    <p>
-      LANは、30代の暮らしをシンプルできれいめに記録するライフスタイルブログです。
-      季節の整え方、仕事との距離感、日常の小さな豊かさについて書いています。
-    </p>
-    <p>
-      記事は microCMS で管理し、Astro で静的に表示しています。
-    </p>
-  </section>
+<Layout title="About" description="運営者プロフィールとこのブログについて">
+  <div class="about-container">
+    <!-- プロフィールヘッダー -->
+    <header class="profile-header">
+      <div class="avatar-placeholder">
+        <span>👤</span>
+      </div>
+      <h1 class="profile-name">あなたの名前</h1>
+      <p class="profile-bio">日々の暮らしの道具、思考の断片、役立つモノ・コトを記録する個人ノート。</p>
+    </header>
+
+    <!-- プロフィール本文 -->
+    <div class="about-content">
+      <section class="about-section">
+        <h2>このブログについて</h2>
+        <p>
+          日々の生活の中で見つけた便利な道具やライフハック、気になったトピックを自分の言葉で書き残す場所です。
+          シンプルで長く使えるもの、生活を少しだけ身軽にしてくれる習慣を中心に発信しています。
+        </p>
+      </section>
+
+      <section class="about-section">
+        <h2>発信している主なテーマ</h2>
+        <ul class="topic-list">
+          <li><strong>モノ・道具：</strong> 買ってよかった日用品や長く使えるベーシックアイテム</li>
+          <li><strong>暮らし・習慣：</strong> 日常のルーティンや心地よく過ごすための工夫</li>
+          <li><strong>ノウハウ・考察：</strong> 日々の気づきや思考のまとめ</li>
+        </ul>
+      </section>
+
+      <section class="about-section">
+        <h2>リンク・連絡先</h2>
+        <p>感想やお気づきの点などがありましたら、各種リンクまたはフォームよりお気軽にご連絡ください。</p>
+        <div class="links-group">
+          <a href="/" class="profile-link">記事一覧を見る</a>
+        </div>
+      </section>
+    </div>
+  </div>
 </Layout>
+
+<style>
+  .about-container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 1.25rem 6rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  }
+
+  /* プロフィール上部 */
+  .profile-header {
+    text-align: center;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 3rem;
+  }
+
+  .avatar-placeholder {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background-color: #f1f5f9;
+    border: 2px solid #e2e8f0;
+    margin: 0 auto 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+  }
+
+  .profile-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem;
+  }
+
+  .profile-bio {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #64748b;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* 本文セクション */
+  .about-content {
+    color: #27272a;
+    line-height: 1.95;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+  }
+
+  .about-section {
+    margin-bottom: 3rem;
+  }
+
+  .about-section h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid #1e3a8a; /* 統一アクセントネイビー */
+  }
+
+  .about-section p {
+    margin-bottom: 1rem;
+    color: #334155;
+  }
+
+  .topic-list {
+    margin: 1rem 0;
+    padding-left: 1.4rem;
+    color: #334155;
+  }
+
+  .topic-list li {
+    margin-bottom: 0.6rem;
+  }
+
+  .topic-list strong {
+    color: #0f172a;
+  }
+
+  /* リンクボタン */
+  .links-group {
+    margin-top: 1.5rem;
+  }
+
+  .profile-link {
+    display: inline-block;
+    color: #1e3a8a;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+  }
+
+  .profile-link:hover {
+    background-color: #f8fafc;
+    border-color: #1e3a8a;
+  }
+</style>

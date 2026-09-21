@@ -59,8 +59,10 @@ const HERO_IMAGE = '/hero-placeholder.svg';
             <img src="/profile-placeholder.svg" alt="プロフィール画像の仮画像" />
             <span>PROFILE</span>
           </div>
-          <h2 class="sidebar-title">NOTE &amp; LIFE</h2>
-          <p class="profile-text">暮らしの中で見つけたことや、便利なモノを記録しています。</p>
+          <div class="profile-copy">
+            <h2 class="sidebar-title">NOTE &amp; LIFE</h2>
+            <p class="profile-text">暮らしの中で見つけたことや、便利なモノを記録しています。</p>
+          </div>
         </section>
 
         <section class="sidebar-section">
@@ -251,10 +253,12 @@ const HERO_IMAGE = '/hero-placeholder.svg';
     overflow: hidden;
     display: grid;
     place-items: center;
+    width: 110px;
+    height: 110px;
     aspect-ratio: 1 / 1;
-    margin-bottom: 1rem;
+    margin: 0 auto 1rem;
     border: 1px dashed #b7aa9b;
-    border-radius: 8px;
+    border-radius: 50%;
     color: #9a8d7e;
     font-size: 0.75rem;
     letter-spacing: 0.14em;
@@ -266,6 +270,7 @@ const HERO_IMAGE = '/hero-placeholder.svg';
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 50%;
   }
 
   .profile-image span {
@@ -315,6 +320,73 @@ const HERO_IMAGE = '/hero-placeholder.svg';
     gap: 0.45rem;
   }
 
+  @media (max-width: 768px) {
+    .profile-section {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .profile-image {
+      position: relative;
+      flex-shrink: 0;
+      width: 88px;
+      height: 88px;
+      aspect-ratio: 1 / 1;
+      margin: 0;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .profile-image img {
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .profile-copy {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .profile-copy .sidebar-title {
+      margin-bottom: 0.3rem;
+    }
+
+    .profile-text {
+      line-height: 1.6;
+    }
+
+    .post-link {
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .post-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .post-thumbnail {
+      flex-shrink: 0;
+    }
+
+    .post-thumbnail img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+  }
+
   @media (max-width: 640px) {
     .home-layout {
       grid-template-columns: 1fr;
@@ -326,17 +398,17 @@ const HERO_IMAGE = '/hero-placeholder.svg';
     }
 
     .post-link {
-      flex-direction: column-reverse;
-      gap: 1rem;
+      flex-direction: row;
+      gap: 0.9rem;
     }
 
     .post-thumbnail {
-      width: 100%;
+      width: auto;
     }
 
     .post-thumbnail img {
-      width: 100%;
-      height: 180px;
+      width: 84px;
+      height: 84px;
     }
 
     .post-title {

@@ -29,16 +29,6 @@ const categoryName = Array.isArray(post.category) ? post.category[0] : post.cate
         )}
       </div>
       <h1 class="note-title">{post.title}</h1>
-      {post.eyecatch && (
-        <div class="note-cover">
-          <img
-            src={`${post.eyecatch.url}?w=1400&fit=max`}
-            alt={post.title}
-            width={post.eyecatch.width}
-            height={post.eyecatch.height}
-          />
-        </div>
-      )}
     </header>
 
     <div class="note-body" set:html={post.content} />
@@ -106,13 +96,14 @@ const categoryName = Array.isArray(post.category) ? post.category[0] : post.cate
 
   .note-body {
     font-size: 1.05rem;
-    line-height: 1.95;
+    line-height: 1.6;
     color: #27272a;
     letter-spacing: 0.025em;
   }
 
   .note-body :global(p) {
-    margin-bottom: 2rem;
+    margin: 0 0 0.55rem;
+    line-height: 1.6;
   }
 
   .note-body :global(h2) {
@@ -146,12 +137,17 @@ const categoryName = Array.isArray(post.category) ? post.category[0] : post.cate
   }
 
   .note-body :global(ul), .note-body :global(ol) {
-    margin-bottom: 2rem;
-    padding-left: 1.5rem;
+    margin: 0.8rem 0 1rem;
+    padding-left: 1.4rem;
+    line-height: 1.7;
   }
 
   .note-body :global(li) {
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .note-body :global(li:last-child) {
+    margin-bottom: 0;
   }
 
   .note-body :global(blockquote) {

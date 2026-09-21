@@ -6,12 +6,21 @@ export async function getStaticPaths() {
   const response = await getBlogs();
   return response.contents.map((post) => ({
     params: { id: post.id },
+    props: { allPosts: response.contents },
   }));
 }
 
 const { id } = Astro.params;
+const { allPosts } = Astro.props;
 const post = await getBlog(id!);
 const description = post.content.replace(/<[^>]*>/g, '').slice(0, 120);
+
+const sortedPosts = [...allPosts].sort(
+  (a, b) => new Date(b.publishedAt ?? 0).getTime() - new Date(a.publishedAt ?? 0).getTime(),
+);
+const currentIndex = sortedPosts.findIndex((item) => item.id === id);
+const previousPost = currentIndex >= 0 ? sortedPosts[currentIndex + 1] : undefined;
+const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : undefined;
 
 // カテゴリ名の取り出し（配列でも単一文字列でも対応）
 const categoryName = Array.isArray(post.category) ? post.category[0] : post.category;
@@ -19,6 +28,21 @@ const categoryName = Array.isArray(post.category) ? post.category[0] : post.cate
 
 <Layout title={`${post.title}`} description={description}>
   <article class="note-article">
+    <nav class="article-nav" aria-label="記事ナビゲーション">
+      {previousPost && (
+        <a href={`/blog/${previousPost.id}`} class="previous-post" title={previousPost.title}>
+          <span class="nav-label">« 前の記事</span>
+          <span class="nav-title">{previousPost.title}</span>
+        </a>
+      )}
+      {nextPost && (
+        <a href={`/blog/${nextPost.id}`} class="next-post" title={nextPost.title}>
+          <span class="nav-title">{nextPost.title}</span>
+          <span class="nav-label">次の記事 »</span>
+        </a>
+      )}
+    </nav>
+
     <header class="note-header">
       <div class="note-meta">
         <time datetime={post.publishedAt} class="note-date">{formatDate(post.publishedAt)}</time>
@@ -32,6 +56,21 @@ const categoryName = Array.isArray(post.category) ? post.category[0] : post.cate
     </header>
 
     <div class="note-body" set:html={post.content} />
+
+    <nav class="article-nav article-nav-bottom" aria-label="記事ナビゲーション">
+      {previousPost && (
+        <a href={`/blog/${previousPost.id}`} class="previous-post" title={previousPost.title}>
+          <span class="nav-label">« 前の記事</span>
+          <span class="nav-title">{previousPost.title}</span>
+        </a>
+      )}
+      {nextPost && (
+        <a href={`/blog/${nextPost.id}`} class="next-post" title={nextPost.title}>
+          <span class="nav-title">{nextPost.title}</span>
+          <span class="nav-label">次の記事 »</span>
+        </a>
+      )}
+    </nav>
 
     <footer class="note-footer">
       <a class="back-link" href="/">← 記事一覧へ戻る</a>
@@ -49,6 +88,52 @@ const categoryName = Array.isArray(post.category) ? post.category[0] : post.cate
 
   .note-header {
     margin-bottom: 3rem;
+  }
+
+  .article-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .article-nav-bottom {
+    margin-top: 3rem;
+    margin-bottom: 0;
+  }
+
+  .article-nav a {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 0.5rem;
+    align-items: baseline;
+    color: #1e3a8a;
+    text-decoration: none;
+  }
+
+  .article-nav .next-post {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .article-nav .nav-label {
+    flex: 0 0 auto;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .article-nav .nav-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.9rem;
+  }
+
+  .article-nav a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .note-meta {

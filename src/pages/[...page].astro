@@ -2,10 +2,19 @@
 import Layout from '../layouts/Layout.astro';
 import PostCard from '../components/PostCard.astro';
 import { getBlogs, getSidebarData } from '../lib/microcms';
+import type { GetStaticPathsOptions } from 'astro';
 
-const response = await getBlogs();
-const posts = response.contents;
-const { recentPosts, categories, archives } = getSidebarData(posts);
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const response = await getBlogs();
+  return paginate(response.contents, {
+    pageSize: 5,
+    props: { allPosts: response.contents },
+  });
+}
+
+const { page, allPosts } = Astro.props;
+const posts = page.data;
+const { recentPosts, categories, archives } = getSidebarData(allPosts);
 const HERO_IMAGE = '/hero-placeholder.svg';
 ---
 
@@ -16,6 +25,13 @@ const HERO_IMAGE = '/hero-placeholder.svg';
         {posts.map((post) => (
           <PostCard post={post} />
         ))}
+
+        {(page.url.prev || page.url.next) && (
+          <nav class="pagination" aria-label="記事一覧のページ移動">
+            {page.url.prev ? <a href={page.url.prev}>← 前へ</a> : <span aria-hidden="true" />}
+            {page.url.next ? <a href={page.url.next}>次へ →</a> : <span aria-hidden="true" />}
+          </nav>
+        )}
       </div>
 
       <aside class="sidebar" aria-label="サイドバー">
@@ -87,6 +103,29 @@ const HERO_IMAGE = '/hero-placeholder.svg';
   .post-list {
     display: flex;
     flex-direction: column;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 2rem;
+  }
+
+  .pagination a {
+    min-width: 6rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid #e4d9cc;
+    border-radius: 4px;
+    color: #2d2a26;
+    text-align: center;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .pagination a:hover {
+    background-color: #f6f1ea;
+    border-color: #b7aa9b;
   }
 
   .post-item {

@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { formatDate, getBlogs, getSidebarData } from '../lib/microcms';
+import PostCard from '../components/PostCard.astro';
+import { getBlogs, getSidebarData } from '../lib/microcms';
 
 const response = await getBlogs();
 const posts = response.contents;
@@ -12,45 +13,9 @@ const HERO_IMAGE = '/hero-placeholder.svg';
   <div class="note-container">
     <div class="home-layout">
       <div class="post-list">
-        {posts.map((post) => {
-          const excerpt = post.content.replace(/<[^>]*>/g, '').slice(0, 110);
-          const categoryName = Array.isArray(post.category) ? post.category[0] : post.category;
-
-          return (
-            <article class="post-item">
-              <!-- 日付とカテゴリラベル -->
-              <div class="post-meta">
-                <time datetime={post.publishedAt} class="post-date">
-                  {formatDate(post.publishedAt)}
-                </time>
-                {categoryName && (
-                  <a href={`/category/${encodeURIComponent(categoryName)}`} class="post-category">
-                    {categoryName}
-                  </a>
-                )}
-              </div>
-
-              <!-- 記事本文・画像リンク -->
-              <a href={`/blog/${post.id}`} class="post-link">
-                <div class="post-text">
-                  <h2 class="post-title">{post.title}</h2>
-                  <p class="post-excerpt">{excerpt}...</p>
-                </div>
-                {post.eyecatch && (
-                  <div class="post-thumbnail">
-                    <img
-                      src={`${post.eyecatch.url}?w=400&h=260&fit=crop`}
-                      alt={post.title}
-                      width="180"
-                      height="117"
-                      loading="lazy"
-                    />
-                  </div>
-                )}
-              </a>
-            </article>
-          );
-        })}
+        {posts.map((post) => (
+          <PostCard post={post} />
+        ))}
       </div>
 
       <aside class="sidebar" aria-label="サイドバー">
@@ -129,10 +94,6 @@ const HERO_IMAGE = '/hero-placeholder.svg';
     padding: 2rem 0;
   }
 
-  .post-item:first-child {
-    padding-top: 1rem;
-  }
-
   /* 日付とカテゴリの並び */
   .post-meta {
     display: flex;
@@ -172,6 +133,10 @@ const HERO_IMAGE = '/hero-placeholder.svg';
   .post-text {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 6px;
   }
 
   .post-title {
@@ -181,7 +146,7 @@ const HERO_IMAGE = '/hero-placeholder.svg';
     font-weight: 700;
     line-height: 1.5;
     color: #2d2a26 !important;
-    margin-bottom: 0.6rem;
+    margin: 0;
     letter-spacing: -0.01em;
     transition: color 0.15s ease;
   }
@@ -363,28 +328,6 @@ const HERO_IMAGE = '/hero-placeholder.svg';
     .profile-text {
       line-height: 1.6;
     }
-
-    .post-link {
-      flex-direction: row;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .post-text {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .post-thumbnail {
-      flex-shrink: 0;
-    }
-
-    .post-thumbnail img {
-      width: 90px;
-      height: 90px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
   }
 
   @media (max-width: 640px) {
@@ -395,20 +338,6 @@ const HERO_IMAGE = '/hero-placeholder.svg';
 
     .sidebar {
       padding-top: 0;
-    }
-
-    .post-link {
-      flex-direction: row;
-      gap: 0.9rem;
-    }
-
-    .post-thumbnail {
-      width: auto;
-    }
-
-    .post-thumbnail img {
-      width: 84px;
-      height: 84px;
     }
 
     .post-title {

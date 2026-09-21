@@ -84,11 +84,9 @@ import Footer from '../components/Footer.astro';
   }
 
   .hero-banner {
-    --hero-height: clamp(64px, 21vw, 240px);
-    height: var(--hero-height);
+    height: clamp(64px, 21vw, 240px);
     overflow: hidden;
     background: #e8ece3;
-    transition: height 0.12s linear;
   }
 
   .hero-banner img {
@@ -97,6 +95,9 @@ import Footer from '../components/Footer.astro';
     object-fit: cover;
     object-position: center;
     display: block;
+    transform: scale(var(--hero-scale, 1));
+    transform-origin: center;
+    will-change: transform;
   }
 
   a {
@@ -112,24 +113,27 @@ import Footer from '../components/Footer.astro';
 {heroImage && (
   <script>
     const heroBanner = document.querySelector<HTMLElement>('[data-hero-banner]');
+    const heroImage = heroBanner?.querySelector<HTMLImageElement>('img');
 
-    if (heroBanner) {
-      const initialHeight = heroBanner.getBoundingClientRect().height;
-      const minimumHeight = 64;
+    if (heroBanner && heroImage) {
+      const shrinkDistance = 240;
       let frameRequested = false;
 
-      const updateHeroHeight = () => {
-        const nextHeight = Math.max(minimumHeight, initialHeight - window.scrollY * 0.45);
-        heroBanner.style.setProperty('--hero-height', `${nextHeight}px`);
+      const updateHeroScale = () => {
+        const progress = Math.min(window.scrollY / shrinkDistance, 1);
+        const scale = 1 - progress * 0.12;
+        heroImage.style.setProperty('--hero-scale', `${scale}`);
         frameRequested = false;
       };
 
       window.addEventListener('scroll', () => {
         if (!frameRequested) {
-          window.requestAnimationFrame(updateHeroHeight);
+          window.requestAnimationFrame(updateHeroScale);
           frameRequested = true;
         }
       }, { passive: true });
+
+      updateHeroScale();
     }
   </script>
 )}

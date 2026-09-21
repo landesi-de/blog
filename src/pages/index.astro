@@ -1,9 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { formatDate, getBlogs } from '../lib/microcms';
+import { formatDate, getBlogs, getSidebarData } from '../lib/microcms';
 
 const response = await getBlogs();
 const posts = response.contents;
+const { recentPosts, categories, archives } = getSidebarData(posts);
 const HERO_IMAGE = '/hero-placeholder.svg';
 ---
 
@@ -65,28 +66,35 @@ const HERO_IMAGE = '/hero-placeholder.svg';
         <section class="sidebar-section">
           <h2 class="sidebar-title">最近の記事</h2>
           <ul class="sidebar-list">
-            <li><a href="#">春の暮らしを整える小さな習慣</a></li>
-            <li><a href="#">長く使いたい道具を選ぶ</a></li>
-            <li><a href="#">週末に読みたい本のこと</a></li>
+            {recentPosts.map((post) => (
+              <li>
+                <a href={`/blog/${post.id}`}>{post.title}</a>
+              </li>
+            ))}
           </ul>
         </section>
 
         <section class="sidebar-section">
           <h2 class="sidebar-title">カテゴリ</h2>
           <ul class="sidebar-list category-list">
-            <li><a href="#">暮らし</a></li>
-            <li><a href="#">道具</a></li>
-            <li><a href="#">読書</a></li>
-            <li><a href="#">日記</a></li>
+            {categories.map((category) => (
+              <li>
+                <a href={`/category/${encodeURIComponent(category.name)}`}>
+                  {category.name} ({category.count})
+                </a>
+              </li>
+            ))}
           </ul>
         </section>
 
         <section class="sidebar-section">
           <h2 class="sidebar-title">アーカイブ</h2>
           <ul class="sidebar-list archive-list">
-            <li><a href="#">2024年03月</a></li>
-            <li><a href="#">2024年02月</a></li>
-            <li><a href="#">2024年01月</a></li>
+            {archives.map((archive) => (
+              <li>
+                <a href={archive.href}>{archive.label} ({archive.count})</a>
+              </li>
+            ))}
           </ul>
         </section>
       </aside>
@@ -170,7 +178,7 @@ const HERO_IMAGE = '/hero-placeholder.svg';
     font-size: 1.25rem;
     font-weight: 700;
     line-height: 1.5;
-    color: #1e3a8a !important;
+    color: #2d2a26 !important;
     margin-bottom: 0.6rem;
     letter-spacing: -0.01em;
     transition: color 0.15s ease;
@@ -183,7 +191,7 @@ const HERO_IMAGE = '/hero-placeholder.svg';
     bottom: -0.15rem;
     left: 0;
     height: 2px;
-    background-color: #1e3a8a;
+    background-color: #2d2a26;
     transform: scaleX(0);
     transform-origin: left center;
     transition: transform 0.3s ease;
@@ -194,7 +202,7 @@ const HERO_IMAGE = '/hero-placeholder.svg';
   }
 
   .post-link:hover .post-title {
-    color: #1e3a8a;
+    color: #2d2a26;
   }
 
   .post-excerpt {

@@ -1,61 +1,63 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { formatDate, getBlogs } from '../../lib/microcms';
+import Layout from '../../../layouts/Layout.astro';
+import { formatDate, getBlogs } from '../../../lib/microcms';
 
 export async function getStaticPaths() {
-  const CATEGORIES = [
-    '家電・ガジェット',
-    '暮らし・習慣',
-    '子ども・家族',
-    '趣味・お出かけ',
-    '仕事',
-    '日常',
-    'その他',
-  ];
-
   const response = await getBlogs();
-  const allPosts = response.contents;
+  const posts = response.contents;
 
-  return CATEGORIES.map((cat) => {
-    // カテゴリが一致する記事だけを抽出
-    const filteredPosts = allPosts.filter((post) => {
-      if (Array.isArray(post.category)) {
-        return post.category.includes(cat);
-      }
-      return post.category === cat;
-    });
+  const monthMap = new Map<string, number>();
 
+  posts.forEach((post) => {
+    const published = post.publishedAt ? new Date(post.publishedAt) : null;
+    if (!published || Number.isNaN(published.getTime())) return;
+
+    const year = published.getFullYear();
+    const month = published.getMonth() + 1;
+    const key = `${year}/${month}`;
+    monthMap.set(key, (monthMap.get(key) ?? 0) + 1);
+  });
+
+  return [...monthMap.entries()].map(([key]) => {
+    const [year, month] = key.split('/').map(Number);
     return {
-      params: { category: cat },
-      props: { posts: filteredPosts, currentCategory: cat },
+      params: { year: String(year), month: String(month) },
     };
   });
 }
 
-const { posts, currentCategory } = Astro.props;
+const { year, month } = Astro.params;
+const response = await getBlogs();
+const posts = response.contents.filter((post) => {
+  const published = post.publishedAt ? new Date(post.publishedAt) : null;
+  if (!published || Number.isNaN(published.getTime())) return false;
+  return published.getFullYear() === Number(year) && published.getMonth() + 1 === Number(month);
+});
+const archiveLabel = `${Number(year)}年${Number(month)}月`;
 ---
 
-<Layout title={`${currentCategory} の記事一覧`}>
+<Layout title={`${archiveLabel} の記事一覧`}>
   <div class="note-container">
-    <header class="category-header">
-      <span class="category-tag">CATEGORY</span>
-      <h1 class="category-title">{currentCategory}</h1>
-      <p class="category-count">{posts.length} 件の記事</p>
+    <header class="archive-header">
+      <span class="archive-tag">ARCHIVE</span>
+      <h1 class="archive-title">{archiveLabel}</h1>
+      <p class="archive-count">{posts.length} 件の記事</p>
     </header>
 
     <div class="post-list">
       {posts.length === 0 ? (
-        <p class="empty-message">このカテゴリの記事はまだありません。</p>
+        <p class="empty-message">この月の記事はまだありません。</p>
       ) : (
         posts.map((post) => {
           const excerpt = post.content.replace(/<[^>]*>/g, '').slice(0, 110);
+          const categoryName = Array.isArray(post.category) ? post.category[0] : post.category;
+
           return (
             <article class="post-item">
               <a href={`/blog/${post.id}`} class="post-link">
                 <div class="post-text">
-                  <time datetime={post.publishedAt} class="post-date">
-                    {formatDate(post.publishedAt)}
-                  </time>
+                  <time datetime={post.publishedAt} class="post-date">{formatDate(post.publishedAt)}</time>
+                  {categoryName && <span class="post-category">{categoryName}</span>}
                   <h2 class="post-title">{post.title}</h2>
                   <p class="post-excerpt">{excerpt}...</p>
                 </div>
@@ -77,7 +79,7 @@ const { posts, currentCategory } = Astro.props;
       )}
     </div>
 
-    <footer class="category-footer">
+    <footer class="archive-footer">
       <a class="back-link" href="/">← 記事一覧へ戻る</a>
     </footer>
   </div>
@@ -91,29 +93,29 @@ const { posts, currentCategory } = Astro.props;
     font-family: "Zen Maru Gothic", sans-serif;
   }
 
-  .category-header {
+  .archive-header {
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
     border-bottom: 2px solid #0f172a;
   }
 
-  .category-tag {
+  .archive-tag {
+    display: block;
     font-size: 0.75rem;
     font-weight: 700;
     color: #1e3a8a;
     letter-spacing: 0.08em;
-    display: block;
     margin-bottom: 0.35rem;
   }
 
-  .category-title {
+  .archive-title {
     font-size: 1.75rem;
     font-weight: 700;
     color: #0f172a;
     margin-bottom: 0.4rem;
   }
 
-  .category-count {
+  .archive-count {
     font-size: 0.85rem;
     color: #64748b;
   }
@@ -154,6 +156,17 @@ const { posts, currentCategory } = Astro.props;
     margin-bottom: 0.4rem;
   }
 
+  .post-category {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #1e3a8a;
+    background-color: #eff6ff;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.55rem;
+  }
+
   .post-title {
     font-size: 1.25rem;
     font-weight: 700;
@@ -187,7 +200,7 @@ const { posts, currentCategory } = Astro.props;
     background-color: #f1f5f9;
   }
 
-  .category-footer {
+  .archive-footer {
     margin-top: 3.5rem;
   }
 
@@ -207,6 +220,7 @@ const { posts, currentCategory } = Astro.props;
       flex-direction: column-reverse;
       gap: 1rem;
     }
+
     .post-thumbnail img {
       width: 100%;
       height: 180px;

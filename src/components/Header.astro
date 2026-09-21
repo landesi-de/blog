@@ -18,6 +18,7 @@ const CATEGORIES = [
   <div class="header-inner">
     <a class="brand" href="/">
       <span class="brand-title">{BLOG_TITLE}</span>
+      <span class="brand-subtitle">日々の暮らし</span>
     </a>
     <nav class="nav">
       <a href="/" class={path === '/' ? 'active' : ''}>Articles</a>
@@ -58,14 +59,27 @@ const CATEGORIES = [
   }
 
   .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
     text-decoration: none;
   }
 
   .brand-title {
-    font-size: 1.15rem;
+    display: block;
+    font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: 0.04em;
-    color: #0f172a;
+    color: #1e3a8a !important;
+  }
+
+  .brand-subtitle {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.7rem;
+    line-height: 1.4;
+    letter-spacing: 0.04em;
   }
 
   .nav {

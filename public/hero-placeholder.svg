@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 540" role="img" aria-labelledby="title desc">
+  <title id="title">Header image placeholder</title>
+  <desc id="desc">A navy abstract ocean placeholder image.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2f5f" />
+      <stop offset="1" stop-color="#071a36" />
+    </linearGradient>
+    <linearGradient id="horizon" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4b78a8" stop-opacity="0.65" />
+      <stop offset="1" stop-color="#12325d" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="540" fill="url(#background)" />
+  <rect width="1600" height="540" fill="url(#horizon)" />
+  <path d="M0 280c180-82 320 52 520-18s350-84 540-8 335 72 540-26v312H0Z" fill="#1d4d7d" opacity="0.9" />
+  <path d="M0 360c190-72 325 30 525-20s370-64 555 10 320 42 520-36v226H0Z" fill="#0b2a50" opacity="0.95" />
+  <path d="M0 302c180-52 320 48 520-10s350-60 540 2 330 48 540-24" fill="none" stroke="#8eb4d1" stroke-width="8" opacity="0.45" />
+</svg>

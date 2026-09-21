@@ -4,60 +4,109 @@ import { formatDate, getBlogs } from '../lib/microcms';
 
 const response = await getBlogs();
 const posts = response.contents;
+const HERO_IMAGE = '/hero-placeholder.svg';
 ---
 
-<Layout title="ホーム">
+<Layout title="ホーム" heroImage={HERO_IMAGE} heroAlt="NOTE & LIFEのヘッダー画像">
   <div class="note-container">
-    <div class="post-list">
-      {posts.map((post) => {
-        const excerpt = post.content.replace(/<[^>]*>/g, '').slice(0, 110);
-        const categoryName = Array.isArray(post.category) ? post.category[0] : post.category;
+    <div class="home-layout">
+      <div class="post-list">
+        {posts.map((post) => {
+          const excerpt = post.content.replace(/<[^>]*>/g, '').slice(0, 110);
+          const categoryName = Array.isArray(post.category) ? post.category[0] : post.category;
 
-        return (
-          <article class="post-item">
-            <!-- 日付とカテゴリラベル -->
-            <div class="post-meta">
-              <time datetime={post.publishedAt} class="post-date">
-                {formatDate(post.publishedAt)}
-              </time>
-              {categoryName && (
-                <a href={`/category/${encodeURIComponent(categoryName)}`} class="post-category">
-                  {categoryName}
-                </a>
-              )}
-            </div>
-
-            <!-- 記事本文・画像リンク -->
-            <a href={`/blog/${post.id}`} class="post-link">
-              <div class="post-text">
-                <h2 class="post-title">{post.title}</h2>
-                <p class="post-excerpt">{excerpt}...</p>
+          return (
+            <article class="post-item">
+              <!-- 日付とカテゴリラベル -->
+              <div class="post-meta">
+                <time datetime={post.publishedAt} class="post-date">
+                  {formatDate(post.publishedAt)}
+                </time>
+                {categoryName && (
+                  <a href={`/category/${encodeURIComponent(categoryName)}`} class="post-category">
+                    {categoryName}
+                  </a>
+                )}
               </div>
-              {post.eyecatch && (
-                <div class="post-thumbnail">
-                  <img
-                    src={`${post.eyecatch.url}?w=400&h=260&fit=crop`}
-                    alt={post.title}
-                    width="180"
-                    height="117"
-                    loading="lazy"
-                  />
+
+              <!-- 記事本文・画像リンク -->
+              <a href={`/blog/${post.id}`} class="post-link">
+                <div class="post-text">
+                  <h2 class="post-title">{post.title}</h2>
+                  <p class="post-excerpt">{excerpt}...</p>
                 </div>
-              )}
-            </a>
-          </article>
-        );
-      })}
+                {post.eyecatch && (
+                  <div class="post-thumbnail">
+                    <img
+                      src={`${post.eyecatch.url}?w=400&h=260&fit=crop`}
+                      alt={post.title}
+                      width="180"
+                      height="117"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+              </a>
+            </article>
+          );
+        })}
+      </div>
+
+      <aside class="sidebar" aria-label="サイドバー">
+        <section class="sidebar-section profile-section">
+          <div class="profile-image">
+            <img src="/profile-placeholder.svg" alt="プロフィール画像の仮画像" />
+            <span>PROFILE</span>
+          </div>
+          <h2 class="sidebar-title">NOTE &amp; LIFE</h2>
+          <p class="profile-text">暮らしの中で見つけたことや、便利なモノを記録しています。</p>
+        </section>
+
+        <section class="sidebar-section">
+          <h2 class="sidebar-title">最近の記事</h2>
+          <ul class="sidebar-list">
+            <li><a href="#">春の暮らしを整える小さな習慣</a></li>
+            <li><a href="#">長く使いたい道具を選ぶ</a></li>
+            <li><a href="#">週末に読みたい本のこと</a></li>
+          </ul>
+        </section>
+
+        <section class="sidebar-section">
+          <h2 class="sidebar-title">カテゴリ</h2>
+          <ul class="sidebar-list category-list">
+            <li><a href="#">暮らし</a></li>
+            <li><a href="#">道具</a></li>
+            <li><a href="#">読書</a></li>
+            <li><a href="#">日記</a></li>
+          </ul>
+        </section>
+
+        <section class="sidebar-section">
+          <h2 class="sidebar-title">アーカイブ</h2>
+          <ul class="sidebar-list archive-list">
+            <li><a href="#">2024年03月</a></li>
+            <li><a href="#">2024年02月</a></li>
+            <li><a href="#">2024年01月</a></li>
+          </ul>
+        </section>
+      </aside>
     </div>
   </div>
 </Layout>
 
 <style>
   .note-container {
-    max-width: 720px;
+    max-width: 1080px;
     margin: 0 auto;
     padding: 2rem 1.25rem 5rem;
     font-family: "Zen Maru Gothic", sans-serif;
+  }
+
+  .home-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 4rem;
+    align-items: start;
   }
 
   .post-list {
@@ -116,13 +165,32 @@ const posts = response.contents;
   }
 
   .post-title {
+    display: inline-block;
+    position: relative;
     font-size: 1.25rem;
     font-weight: 700;
     line-height: 1.5;
-    color: #0f172a;
+    color: #1e3a8a !important;
     margin-bottom: 0.6rem;
     letter-spacing: -0.01em;
     transition: color 0.15s ease;
+  }
+
+  .post-title::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -0.15rem;
+    left: 0;
+    height: 2px;
+    background-color: #1e3a8a;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.3s ease;
+  }
+
+  .post-link:hover .post-title::after {
+    transform: scaleX(1);
   }
 
   .post-link:hover .post-title {
@@ -153,7 +221,102 @@ const posts = response.contents;
     background-color: #f1f5f9;
   }
 
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+    padding-top: 1rem;
+  }
+
+  .sidebar-section {
+    border-top: 1px solid #e4d9cc;
+    padding-top: 1.25rem;
+  }
+
+  .profile-section {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .profile-image {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1 / 1;
+    margin-bottom: 1rem;
+    border: 1px dashed #b7aa9b;
+    border-radius: 8px;
+    color: #9a8d7e;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+  }
+
+  .profile-image img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .profile-image span {
+    position: relative;
+    z-index: 1;
+    color: #dbeafe;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+  }
+
+  .sidebar-title {
+    margin: 0 0 0.8rem;
+    color: #2d2a26;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .profile-text {
+    margin: 0;
+    color: #7a7368;
+    font-size: 0.85rem;
+    line-height: 1.8;
+  }
+
+  .sidebar-list {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: #7a7368;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .sidebar-list a {
+    transition: color 0.15s ease;
+  }
+
+  .sidebar-list a:hover {
+    color: #6f7a64;
+  }
+
+  .category-list,
+  .archive-list {
+    gap: 0.45rem;
+  }
+
   @media (max-width: 640px) {
+    .home-layout {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .sidebar {
+      padding-top: 0;
+    }
+
     .post-link {
       flex-direction: column-reverse;
       gap: 1rem;

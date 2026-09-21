@@ -2,9 +2,16 @@
 interface Props {
   title: string;
   description?: string;
+  heroImage?: string;
+  heroAlt?: string;
 }
 
-const { title, description = '日々の記録と便利なモノ紹介' } = Astro.props;
+const {
+  title,
+  description = '日々の記録と便利なモノ紹介',
+  heroImage,
+  heroAlt = '',
+} = Astro.props;
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
@@ -23,6 +30,11 @@ import Footer from '../components/Footer.astro';
     <meta name="description" content={description} />
   </head>
   <body>
+    {heroImage && (
+      <div class="hero-banner" data-hero-banner>
+        <img src={heroImage} alt={heroAlt} width="1920" height="360" />
+      </div>
+    )}
     <Header />
     <main class="main-content">
       <slot />
@@ -71,6 +83,22 @@ import Footer from '../components/Footer.astro';
     flex: 1;
   }
 
+  .hero-banner {
+    --hero-height: clamp(64px, 21vw, 240px);
+    height: var(--hero-height);
+    overflow: hidden;
+    background: #e8ece3;
+    transition: height 0.12s linear;
+  }
+
+  .hero-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
   a {
     color: inherit;
   }
@@ -80,3 +108,28 @@ import Footer from '../components/Footer.astro';
     height: auto;
   }
 </style>
+
+{heroImage && (
+  <script>
+    const heroBanner = document.querySelector<HTMLElement>('[data-hero-banner]');
+
+    if (heroBanner) {
+      const initialHeight = heroBanner.getBoundingClientRect().height;
+      const minimumHeight = 64;
+      let frameRequested = false;
+
+      const updateHeroHeight = () => {
+        const nextHeight = Math.max(minimumHeight, initialHeight - window.scrollY * 0.45);
+        heroBanner.style.setProperty('--hero-height', `${nextHeight}px`);
+        frameRequested = false;
+      };
+
+      window.addEventListener('scroll', () => {
+        if (!frameRequested) {
+          window.requestAnimationFrame(updateHeroHeight);
+          frameRequested = true;
+        }
+      }, { passive: true });
+    }
+  </script>
+)}

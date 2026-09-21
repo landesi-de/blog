@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-labelledby="title desc">
+  <title id="title">Profile placeholder</title>
+  <desc id="desc">An abstract navy silhouette used as a profile placeholder.</desc>
+  <rect width="600" height="600" fill="#0b1f3a" />
+  <circle cx="300" cy="220" r="92" fill="#8298b3" />
+  <path d="M128 540c18-138 82-204 172-204s154 66 172 204Z" fill="#8298b3" />
+  <path d="M122 540h356" stroke="#dbeafe" stroke-width="2" opacity="0.45" />
+</svg>

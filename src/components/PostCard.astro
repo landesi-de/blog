@@ -110,35 +110,18 @@ const categoryName = Array.isArray(post.category) ? post.category[0] : post.cate
 
   .post-title {
     display: inline-block;
-    position: relative;
     font-size: 1.25rem;
     font-weight: 700;
     line-height: 1.5;
     color: #2d2a26 !important;
     margin: 0;
     letter-spacing: -0.01em;
-    transition: color 0.15s ease;
-  }
-
-  .post-title::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    bottom: -0.15rem;
-    left: 0;
-    height: 2px;
-    background-color: #2d2a26;
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.3s ease;
-  }
-
-  .post-link:hover .post-title::after {
-    transform: scaleX(1);
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s ease;
   }
 
   .post-link:hover .post-title {
-    color: #2d2a26;
+    border-bottom-color: #2d2a26;
   }
 
   .post-excerpt {
